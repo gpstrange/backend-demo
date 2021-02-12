@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost:27017/studenttest', {useNewUrlParser: true
     process.exit();
 });
 
-app.use((req, res, next) => {
+app.get('/', (req, res, next) => {
     return res.json({status: "Hey there"});
 });
 

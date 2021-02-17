@@ -1,0 +1,30 @@
+h1 {
+    color: red;
+}
+li {
+    color: green
+}
+.mentor {
+    color: purple;
+}
+.teaching {
+    text-decoration: underline;
+}
+#vishnu {
+    text-decoration: line-through;
+}
+img {
+    width: 20%
+}
+body {
+    height: 100vh;
+}
+.center {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form-input {
+    margin: 20px;
+}

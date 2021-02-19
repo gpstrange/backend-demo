@@ -1,11 +1,11 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true }));
 
 // mongoose.Promise = Promise;
 app.set('view engine', 'ejs');
@@ -18,9 +18,9 @@ mongoose.connect('mongodb://localhost:27017/studenttest', {useNewUrlParser: true
     process.exit();
 });
 
-app.get('/', (req, res, next) => {
-    return res.sendFile(path.join(__dirname, 'login.html'));
-});
+// app.get('/', (req, res, next) => {
+//     return res.sendFile(path.join(__dirname, 'login.html'));
+// });
 
 // app.get('/home', (req, res, next) => {
 //     const names = ["guru", "sanjay", "hari", "kavya"];
@@ -28,7 +28,19 @@ app.get('/', (req, res, next) => {
 // });
 
 app.get('/login', (req, res, next) => {
+    console.log('GET method...........');
     return res.render('login');
+});
+
+app.post('/login', (req, response, next) => {
+    console.log(req.body);
+    let err = '';
+    if (req.body.email !== 'guru@gmail.com') {
+        err = 'User not found';
+    } else if (req.body.password !== '123') {
+        err = 'Wrong Password';
+    } 
+    return response.render('login', {err: err});
 });
 
 app.listen(3000, () => {

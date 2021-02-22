@@ -34,13 +34,37 @@ app.get('/login', (req, res, next) => {
 
 app.post('/login', (req, response, next) => {
     console.log(req.body);
-    let err = '';
+    let err;
     if (req.body.email !== 'guru@gmail.com') {
         err = 'User not found';
     } else if (req.body.password !== '123') {
         err = 'Wrong Password';
-    } 
-    return response.render('login', {err: err});
+    }
+    if (err) {
+        return response.render('login', {err: err});
+    }
+    return response.redirect('/home');
+});
+
+app.get('/home', (req, res, next) => {
+    const dogs = [
+        {id: 1, name: 'Pomeranian', imageUrl: './images/pomerian.jpg'},
+        {id: 2, name: 'Labrador', imageUrl: './images/labrador.jpg'},
+        {id: 3, name: 'German Shepard', imageUrl: './images/german.jpeg'},
+        {id: 4, name: 'Pomeranian', imageUrl: './images/pomerian.jpg'},
+    ];
+    return res.render('home', {dogs});
+});
+
+app.get('/dog/:id', (req, res, next) => {
+    const dogs = [
+        {id: 1, name: 'Pomeranian', imageUrl: './images/pomerian.jpg'},
+        {id: 2, name: 'Labrador', imageUrl: './images/labrador.jpg'},
+        {id: 3, name: 'German Shepard', imageUrl: './images/german.jpeg'},
+        {id: 4, name: 'Pomeranian', imageUrl: './images/pomerian.jpg'},
+    ];
+    const dog = dogs[req.params.id - 1];
+    return res.render('dog', {dog});
 });
 
 app.listen(3000, () => {

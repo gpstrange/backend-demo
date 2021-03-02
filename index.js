@@ -9,14 +9,42 @@ app.use(bodyParser.urlencoded({extended: true }));
 
 // mongoose.Promise = Promise;
 app.set('view engine', 'ejs');
+// localhost:3000/app.txt
 app.use(express.static('public'));
 
-mongoose.connect('mongodb://localhost:27017/studenttest', {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+// insertion, deletion, updation, read
+
+            // MongoDB
+// ------------------------------------
+//          studenttest Database
+// -------------------------------------
+//          User Collection
+// user = {email: '', password: ''} --> Schema
+// [user, user, {}, {}]
+// --------------------------------------
+//          Dog Collection
+// [{}, {}, {}, {}, {}, ..................]
+// ---------------------------------------
+//          Cats Collection
+// [{}, {}, {}, {}, .....................]
+
+mongoose.connect('mongodb://localhost:27017/studenttest',
+                 {useNewUrlParser: true, useUnifiedTopology: true}
+                ).then(() => {
     console.log('Connected to mongodb');
 }).catch((err) => {
     console.log('MongoDB connection error. Please make sure MongoDB is running. ');
     process.exit();
 });
+
+const UserSchema = new mongoose.Schema({
+    email: {type: String, unique: true},
+    password: String,
+    name: String,
+    age: Number,
+    dob: Date
+});
+const User = mongoose.model('user', UserSchema);
 
 // app.get('/', (req, res, next) => {
 //     return res.sendFile(path.join(__dirname, 'login.html'));
@@ -27,7 +55,7 @@ mongoose.connect('mongodb://localhost:27017/studenttest', {useNewUrlParser: true
 //     return res.render('math', { students: names });
 // });
 
-app.get('/login', (req, res, next) => {
+app.get('/', (req, res, next) => {
     console.log('GET method...........');
     return res.render('login');
 });
@@ -56,7 +84,7 @@ app.get('/home', (req, res, next) => {
     return res.render('home', {dogs});
 });
 
-app.get('/dog/:id', (req, res, next) => {
+app.get('/dog/:id', (req, res) => {
     const dogs = [
         {id: 1, name: 'Pomeranian', imageUrl: './images/pomerian.jpg'},
         {id: 2, name: 'Labrador', imageUrl: './images/labrador.jpg'},
@@ -65,6 +93,38 @@ app.get('/dog/:id', (req, res, next) => {
     ];
     const dog = dogs[req.params.id - 1];
     return res.render('dog', {dog});
+});
+
+app.post('/user', (req, res) => {
+    console.log(req.body);
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+    };
+    // const userData = new User(newUser);
+    // userData.save();
+    User.insertMany([newUser]).then((data) => {
+        console.log(data);
+        return res.json({msg: 'success', newUser: data});
+    });
+});
+
+app.get('/user', (req, res) => {
+    User.findOne({email: "test@gmail.com"}).then((data) => {
+        return res.json(data);
+    })
+});
+
+app.patch('/user', (req, res) => {
+    // name, email
+    console.log(req.body);
+    User.findOneAndUpdate(
+        {email: req.body.email},
+        {$set: {name: req.body.name}},
+        {new: true}
+    ).then((data) => {
+        return res.json(data);
+    })  
 });
 
 app.listen(3000, () => {
